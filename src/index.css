@@ -1,18 +1,23 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
+  --text: #7d7267;
+  --text-h: #241f1a;
+  --bg: #f2eeea;
+  --border: #e5e0d9;
+  --code-bg: #ffffff;
+  --accent: #253a2c;
+  --accent-bg: rgba(37, 58, 44, 0.08);
+  --accent-border: rgba(37, 58, 44, 0.3);
+  --social-bg: rgba(229, 213, 203, 0.5);
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    rgba(30, 28, 26, 0.08) 0 10px 15px -3px, rgba(30, 28, 26, 0.05) 0 4px 6px -2px;
+
+  --tan-bg: #efe1c9;
+  --tan-text: #7a5f2d;
+  --sage-bg: #dbe8dc;
+  --sage-text: #2f4a34;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Lora', Georgia, 'Times New Roman', serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
@@ -32,17 +37,22 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
+    --text: #b9b2a9;
+    --text-h: #f2eeea;
+    --bg: #211d19;
+    --border: rgba(242, 238, 234, 0.12);
+    --code-bg: #2b2622;
+    --accent: #9fc2a4;
+    --accent-bg: rgba(159, 194, 164, 0.14);
+    --accent-border: rgba(159, 194, 164, 0.45);
+    --social-bg: rgba(242, 238, 234, 0.08);
     --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+      rgba(0, 0, 0, 0.35) 0 10px 15px -3px, rgba(0, 0, 0, 0.2) 0 4px 6px -2px;
+
+    --tan-bg: rgba(239, 225, 201, 0.12);
+    --tan-text: #e0c98f;
+    --sage-bg: rgba(219, 232, 220, 0.12);
+    --sage-text: #a9c9ac;
   }
 
   #social .button-icon {
@@ -55,11 +65,7 @@ body {
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
+  width: 100%;
   min-height: 100svh;
   display: flex;
   flex-direction: column;

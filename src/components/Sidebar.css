@@ -1,0 +1,146 @@
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  margin-bottom: 28px;
+
+  strong {
+    display: block;
+    color: var(--text-h);
+    font-size: 16px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text);
+  }
+}
+
+.sidebar-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  color: var(--text);
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sidebar-nav-item:hover {
+  background: var(--code-bg);
+}
+
+.sidebar-nav-item.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.property-switcher {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+
+.property-switcher-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  opacity: 0.6;
+  padding: 0 10px 8px;
+}
+
+.property-switcher-current,
+.property-switcher-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.property-switcher-current:hover,
+.property-switcher-option:hover {
+  background: var(--code-bg);
+}
+
+.property-switcher-current strong {
+  display: block;
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.property-type {
+  display: block;
+  font-size: 12px;
+  color: var(--text);
+  text-transform: capitalize;
+}
+
+.property-switcher-chevron {
+  margin-left: auto;
+  color: var(--text);
+}
+
+.property-icon {
+  font-size: 18px;
+}
+
+.property-switcher-menu {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  box-sizing: border-box;
+}

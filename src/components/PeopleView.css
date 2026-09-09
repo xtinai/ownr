@@ -1,0 +1,31 @@
+.person-card {
+  align-items: flex-start;
+}
+
+.person-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--border);
+  color: var(--text-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--heading);
+  font-size: 18px;
+}
+
+.person-project-list {
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text);
+  }
+}
