@@ -10,10 +10,11 @@ import ChecklistPreview from './components/ChecklistPreview'
 import ProjectDetailView from './components/ProjectDetailView'
 import SideWidget from './components/SideWidget'
 import { properties, mockProjects } from './data/mockProjects'
-import { STATUS, formatCost } from './lib/projectMeta'
+import { STATUS, formatCost, getGreeting } from './lib/projectMeta'
 
 const ACTIVE_STATUSES = ['quoting', 'scheduled', 'in_progress']
 const PLANNED_STATUSES = ['idea', 'planning']
+const USER_NAME = 'Christina'
 
 function StatusBadge({ status }) {
   return <span className={`badge badge-${status}`}>{STATUS[status].label}</span>
@@ -55,7 +56,7 @@ function HomeView({ property, projects, onToggleChecklistItem, onOpenProject }) 
     <div className="home">
       <header className="home-header">
         <div>
-          <h1>Ownr</h1>
+          <h1>{getGreeting()}, {USER_NAME}.</h1>
           <p className="tagline">Here’s what’s happening with your {property.type}.</p>
         </div>
       </header>

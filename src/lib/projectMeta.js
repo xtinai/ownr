@@ -16,6 +16,13 @@ export const CATEGORY_ICONS = {
   Upgrades: '🔩',
 }
 
+export function getGreeting() {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  return 'Good evening'
+}
+
 export function formatDate(dateStr, options = { month: 'short', day: 'numeric', year: 'numeric' }) {
   return new Date(`${dateStr}T00:00:00`).toLocaleDateString('en-US', options)
 }
