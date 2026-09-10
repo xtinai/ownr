@@ -1,12 +1,14 @@
 .app-shell {
   display: flex;
   flex: 1;
+  min-height: 0;
   align-items: stretch;
 }
 
 .app-main {
   flex: 1;
   min-width: 0;
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -88,10 +90,6 @@
   @media (max-width: 720px) {
     grid-template-columns: 1fr;
   }
-}
-
-.overview-single {
-  max-width: 420px;
 }
 
 .mini-card {

@@ -13,6 +13,11 @@ export const CATEGORY_ICONS = {
   Interior: '🛋️',
   Maintenance: '🔧',
   Detailing: '✨',
+  Upgrades: '🔩',
+}
+
+export function formatDate(dateStr, options = { month: 'short', day: 'numeric', year: 'numeric' }) {
+  return new Date(`${dateStr}T00:00:00`).toLocaleDateString('en-US', options)
 }
 
 export function formatCost(amount) {

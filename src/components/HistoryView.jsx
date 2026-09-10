@@ -1,11 +1,5 @@
 import './HistoryView.css'
-import { STATUS, formatCost } from '../lib/projectMeta'
-
-function formatLoggedDate(dateStr) {
-  return new Date(`${dateStr}T00:00:00`)
-    .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    .toUpperCase()
-}
+import { STATUS, formatCost, formatDate } from '../lib/projectMeta'
 
 function HistoryView({ property, projects }) {
   const entries = [...projects]
@@ -35,7 +29,7 @@ function HistoryView({ property, projects }) {
             return (
               <div className="timeline-entry" key={project.id}>
                 <span className="timeline-dot" />
-                <span className="timeline-date">{formatLoggedDate(project.logged_date)}</span>
+                <span className="timeline-date">{formatDate(project.logged_date).toUpperCase()}</span>
                 <p className="timeline-title">
                   {project.title} · {STATUS[project.status].label}
                 </p>

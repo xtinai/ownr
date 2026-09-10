@@ -1,0 +1,108 @@
+.side-widget-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-select {
+  align-self: flex-start;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-h);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.side-widget-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.rail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rail-list-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.rail-list-main {
+  color: var(--text-h);
+}
+
+.rail-list-status {
+  color: var(--text);
+  font-weight: normal;
+}
+
+.rail-list-date {
+  color: var(--text);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.notes-textarea {
+  width: 100%;
+  flex: 1;
+  min-height: 140px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-h);
+  background: var(--bg);
+  box-sizing: border-box;
+}
+
+.notes-textarea:focus {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 1px;
+}
+
+.mini-cal-month {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.mini-cal-weekday {
+  font-size: 10px;
+  text-align: center;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.mini-cal-day {
+  font-size: 12px;
+  text-align: center;
+  padding: 4px 0;
+  border-radius: 6px;
+  color: var(--text-h);
+  position: relative;
+}
+
+.mini-cal-day.has-event {
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-weight: 600;
+}

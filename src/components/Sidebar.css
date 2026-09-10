@@ -6,6 +6,7 @@
   border-right: 1px solid var(--border);
   padding: 24px 16px;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .sidebar-brand {
@@ -98,6 +99,8 @@
   border: none;
   background: none;
   font: inherit;
+  font-size: 14px;
+  color: var(--text-h);
   text-align: left;
   padding: 8px 10px;
   border-radius: 8px;

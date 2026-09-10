@@ -8,6 +8,7 @@ import MoneyView from './components/MoneyView'
 import HistoryView from './components/HistoryView'
 import ChecklistPreview from './components/ChecklistPreview'
 import ProjectDetailView from './components/ProjectDetailView'
+import SideWidget from './components/SideWidget'
 import { properties, mockProjects } from './data/mockProjects'
 import { STATUS, formatCost } from './lib/projectMeta'
 
@@ -59,7 +60,7 @@ function HomeView({ property, projects, onToggleChecklistItem, onOpenProject }) 
         </div>
       </header>
 
-      <section className="overview-single">
+      <section className="overview-grid">
         <div className="overview-card">
           <span className="overview-label">{property.name}</span>
           <p className="overview-sub">{property.address || property.type}</p>
@@ -78,6 +79,7 @@ function HomeView({ property, projects, onToggleChecklistItem, onOpenProject }) 
             </div>
           </div>
         </div>
+        <SideWidget property={property} projects={projects} />
       </section>
 
       <section>
