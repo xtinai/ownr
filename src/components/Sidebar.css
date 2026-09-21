@@ -13,8 +13,20 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 8px;
-  margin-bottom: 28px;
+  padding: 6px 8px;
+  margin: -6px 0 22px;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:hover {
+    background: var(--code-bg);
+  }
 
   strong {
     display: block;
