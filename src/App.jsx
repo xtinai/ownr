@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Sidebar from './components/Sidebar'
 import ProjectsView from './components/ProjectsView'
@@ -48,15 +48,26 @@ function ProjectCard({ project, onToggleItem, onOpenProject }) {
 function HomeView({ property, projects, onToggleChecklistItem, onOpenProject }) {
   const [showPlanned, setShowPlanned] = useState(true)
   const [showCompleted, setShowCompleted] = useState(false)
+  const [greeting, setGreeting] = useState(getGreeting())
   const completed = projects.filter((p) => p.status === 'completed')
   const active = projects.filter((p) => ACTIVE_STATUSES.includes(p.status))
   const planned = projects.filter((p) => PLANNED_STATUSES.includes(p.status))
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGreeting((current) => {
+        const next = getGreeting()
+        return next === current ? current : next
+      })
+    }, 60000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="home">
       <header className="home-header">
         <div>
-          <h1>{getGreeting()}, {USER_NAME}.</h1>
+          <h1>{greeting}, {USER_NAME}.</h1>
           <p className="tagline">Here’s what’s happening with your {property.type}.</p>
         </div>
       </header>
