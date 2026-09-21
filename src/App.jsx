@@ -230,7 +230,7 @@ function App() {
         property_id: selectedPropertyId,
         budget_actual: null,
         completed_date: null,
-        logged_date: new Date().toISOString().slice(0, 10),
+        logged_date: new Date().toLocaleDateString('sv-SE'),
         checklist: [],
         ...fields,
       }

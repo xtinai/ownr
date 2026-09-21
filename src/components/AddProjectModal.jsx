@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './AddProjectModal.css'
 import { STATUS, CATEGORY_ICONS } from '../lib/projectMeta'
 
@@ -13,13 +13,17 @@ function AddProjectModal({ property, onClose, onSubmit }) {
   const [budget, setBudget] = useState('')
   const [targetDate, setTargetDate] = useState('')
   const [nextAction, setNextAction] = useState('')
+  const openerRef = useRef(document.activeElement)
 
   useEffect(() => {
     function handleKeyDown(e) {
       if (e.key === 'Escape') onClose()
     }
     document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      openerRef.current?.focus?.()
+    }
   }, [onClose])
 
   function handleSubmit(e) {
@@ -37,11 +41,17 @@ function AddProjectModal({ property, onClose, onSubmit }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" role="presentation" onMouseDown={onClose}>
+      <div
+        className="modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-project-title"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <div>
-            <h2>Add a project</h2>
+            <h2 id="add-project-title">Add a project</h2>
             <p className="modal-subtitle">Adding to {property.name}</p>
           </div>
           <button className="modal-close" onClick={onClose} aria-label="Close">
