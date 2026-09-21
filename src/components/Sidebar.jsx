@@ -58,7 +58,7 @@ function Sidebar({ activeNav, onNavChange, properties, selectedProperty, onSelec
         <span className="sidebar-logo">O</span>
         <div>
           <strong>Ownr</strong>
-          <p>Your property, documented.</p>
+          <p>Your {selectedProperty.type}, documented.</p>
         </div>
       </div>
 
