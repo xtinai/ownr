@@ -13,7 +13,7 @@ const FILTERS = [
   { key: 'completed', label: STATUS.completed.label },
 ]
 
-function ProjectsView({ property, projects }) {
+function ProjectsView({ property, projects, onAddProject }) {
   const [filter, setFilter] = useState('all')
 
   const filtered = filter === 'all' ? projects : projects.filter((p) => p.status === filter)
@@ -36,7 +36,7 @@ function ProjectsView({ property, projects }) {
           <button className="icon-btn" aria-label="Search">
             🔍
           </button>
-          <button className="primary-btn">+ Add project</button>
+          <button className="primary-btn" onClick={onAddProject}>+ Add project</button>
         </div>
       </header>
 

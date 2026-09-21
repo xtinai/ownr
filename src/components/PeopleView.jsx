@@ -30,7 +30,7 @@ function PersonCard({ name, projects }) {
   )
 }
 
-function PeopleView({ property, projects }) {
+function PeopleView({ property, projects, onAddProject }) {
   const contractors = buildContractors(projects)
 
   return (
@@ -45,7 +45,7 @@ function PeopleView({ property, projects }) {
           <button className="icon-btn" aria-label="Search">
             🔍
           </button>
-          <button className="primary-btn">+ Add project</button>
+          <button className="primary-btn" onClick={onAddProject}>+ Add project</button>
         </div>
       </header>
 

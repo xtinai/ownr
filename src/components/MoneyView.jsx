@@ -15,7 +15,7 @@ function buildByCategory(projects) {
     .sort((a, b) => b.amount - a.amount)
 }
 
-function MoneyView({ property, projects }) {
+function MoneyView({ property, projects, onAddProject }) {
   const completed = projects.filter((p) => p.status === 'completed')
   const completedTotal = completed.reduce((total, p) => total + (p.budget_actual || 0), 0)
   const plannedActiveTotal = projects
@@ -35,7 +35,7 @@ function MoneyView({ property, projects }) {
           <button className="icon-btn" aria-label="Search">
             🔍
           </button>
-          <button className="primary-btn">+ Add project</button>
+          <button className="primary-btn" onClick={onAddProject}>+ Add project</button>
         </div>
       </header>
 

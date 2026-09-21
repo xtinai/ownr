@@ -9,6 +9,7 @@ import HistoryView from './components/HistoryView'
 import ChecklistPreview from './components/ChecklistPreview'
 import ProjectDetailView from './components/ProjectDetailView'
 import SideWidget from './components/SideWidget'
+import AddProjectModal from './components/AddProjectModal'
 import { properties, mockProjects } from './data/mockProjects'
 import { STATUS, formatCost, getGreeting } from './lib/projectMeta'
 
@@ -181,6 +182,7 @@ function App() {
   const [selectedPropertyId, setSelectedPropertyId] = useState(properties[0].id)
   const [allProjects, setAllProjects] = useState(mockProjects)
   const [selectedProjectId, setSelectedProjectId] = useState(null)
+  const [showAddProject, setShowAddProject] = useState(false)
 
   const selectedProperty = properties.find((p) => p.id === selectedPropertyId)
   const propertyProjects = allProjects.filter((p) => p.property_id === selectedPropertyId)
@@ -218,6 +220,23 @@ function App() {
       ;[copy[index], copy[newIndex]] = [copy[newIndex], copy[index]]
       return copy
     })
+  }
+
+  function handleAddProject(fields) {
+    setAllProjects((prev) => {
+      const newId = Math.max(0, ...prev.map((p) => p.id)) + 1
+      const newProject = {
+        id: newId,
+        property_id: selectedPropertyId,
+        budget_actual: null,
+        completed_date: null,
+        logged_date: new Date().toISOString().slice(0, 10),
+        checklist: [],
+        ...fields,
+      }
+      return [...prev, newProject]
+    })
+    setShowAddProject(false)
   }
 
   function handleNavChange(nav) {
@@ -260,19 +279,39 @@ function App() {
               />
             )}
             {activeNav === 'projects' && (
-              <ProjectsView property={selectedProperty} projects={propertyProjects} />
+              <ProjectsView
+                property={selectedProperty}
+                projects={propertyProjects}
+                onAddProject={() => setShowAddProject(true)}
+              />
             )}
             {activeNav === 'ideas' && (
-              <IdeasView property={selectedProperty} projects={propertyProjects} />
+              <IdeasView
+                property={selectedProperty}
+                projects={propertyProjects}
+                onAddProject={() => setShowAddProject(true)}
+              />
             )}
             {activeNav === 'people' && (
-              <PeopleView property={selectedProperty} projects={propertyProjects} />
+              <PeopleView
+                property={selectedProperty}
+                projects={propertyProjects}
+                onAddProject={() => setShowAddProject(true)}
+              />
             )}
             {activeNav === 'money' && (
-              <MoneyView property={selectedProperty} projects={propertyProjects} />
+              <MoneyView
+                property={selectedProperty}
+                projects={propertyProjects}
+                onAddProject={() => setShowAddProject(true)}
+              />
             )}
             {activeNav === 'history' && (
-              <HistoryView property={selectedProperty} projects={propertyProjects} />
+              <HistoryView
+                property={selectedProperty}
+                projects={propertyProjects}
+                onAddProject={() => setShowAddProject(true)}
+              />
             )}
             {!['home', 'projects', 'ideas', 'people', 'money', 'history'].includes(activeNav) && (
               <ComingSoonView label={activeNav[0].toUpperCase() + activeNav.slice(1)} />
@@ -280,6 +319,14 @@ function App() {
           </>
         )}
       </main>
+
+      {showAddProject && (
+        <AddProjectModal
+          property={selectedProperty}
+          onClose={() => setShowAddProject(false)}
+          onSubmit={handleAddProject}
+        />
+      )}
     </div>
   )
 }

@@ -2,7 +2,7 @@ import ProjectListCard from './ProjectListCard'
 
 const PLANNED_STATUSES = ['idea', 'planning']
 
-function IdeasView({ projects }) {
+function IdeasView({ projects, onAddProject }) {
   const ideas = projects.filter((p) => PLANNED_STATUSES.includes(p.status))
 
   return (
@@ -17,7 +17,7 @@ function IdeasView({ projects }) {
           <button className="icon-btn" aria-label="Search">
             🔍
           </button>
-          <button className="primary-btn">+ Add project</button>
+          <button className="primary-btn" onClick={onAddProject}>+ Add project</button>
         </div>
       </header>
 
