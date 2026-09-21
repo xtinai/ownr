@@ -54,13 +54,13 @@ function PropertySwitcher({ properties, selectedProperty, onSelect }) {
 function Sidebar({ activeNav, onNavChange, properties, selectedProperty, onSelectProperty }) {
   return (
     <aside className="sidebar">
-      <div className="sidebar-brand">
+      <button className="sidebar-brand" onClick={() => onNavChange('home')}>
         <span className="sidebar-logo">O</span>
         <div>
           <strong>Ownr</strong>
           <p>Your {selectedProperty.type}, documented.</p>
         </div>
-      </div>
+      </button>
 
       <nav className="sidebar-nav">
         {NAV_ITEMS.map((item) => (
