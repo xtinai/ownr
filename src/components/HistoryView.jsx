@@ -1,7 +1,7 @@
 import './HistoryView.css'
 import { STATUS, formatCost, formatDate } from '../lib/projectMeta'
 
-function HistoryView({ property, projects }) {
+function HistoryView({ property, projects, onAddProject }) {
   const entries = [...projects]
     .filter((p) => p.logged_date)
     .sort((a, b) => (a.logged_date < b.logged_date ? 1 : -1))
@@ -18,7 +18,7 @@ function HistoryView({ property, projects }) {
           <button className="icon-btn" aria-label="Search">
             🔍
           </button>
-          <button className="primary-btn">+ Add project</button>
+          <button className="primary-btn" onClick={onAddProject}>+ Add project</button>
         </div>
       </header>
 
