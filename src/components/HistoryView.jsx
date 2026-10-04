@@ -67,7 +67,6 @@ function MultiSelectDropdown({ label, options, selected, onToggle }) {
       <button
         type="button"
         aria-expanded={open}
-        aria-haspopup="true"
         className={`history-dropdown-btn ${count > 0 ? 'active' : ''}`}
         onClick={() => setOpen((o) => !o)}
       >
