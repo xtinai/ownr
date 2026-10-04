@@ -45,12 +45,20 @@ function MultiSelectDropdown({ label, options, selected, onToggle }) {
   const ref = useRef(null)
 
   useEffect(() => {
+    if (!open) return undefined
     function handleClickOutside(e) {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false)
     }
+    function handleEscape(e) {
+      if (e.key === 'Escape') setOpen(false)
+    }
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [open])
 
   const count = selected.length
 
@@ -58,6 +66,8 @@ function MultiSelectDropdown({ label, options, selected, onToggle }) {
     <div className="history-dropdown" ref={ref}>
       <button
         type="button"
+        aria-expanded={open}
+        aria-haspopup="true"
         className={`history-dropdown-btn ${count > 0 ? 'active' : ''}`}
         onClick={() => setOpen((o) => !o)}
       >
