@@ -1,3 +1,86 @@
+.history-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.history-dropdown {
+  position: relative;
+}
+
+.history-dropdown-btn {
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.history-dropdown-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.history-dropdown-caret {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.history-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 10;
+  min-width: 140px;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-dropdown-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-h);
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.history-dropdown-option:hover {
+  background: var(--accent-bg);
+}
+
+.history-dropdown-option input {
+  cursor: pointer;
+}
+
+.history-filters-clear {
+  font: inherit;
+  font-size: 13px;
+  color: var(--accent);
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
 .timeline {
   display: flex;
   flex-direction: column;

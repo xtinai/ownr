@@ -62,23 +62,6 @@
   gap: 8px;
 }
 
-.filter-pill {
-  font: inherit;
-  font-size: 13px;
-  padding: 7px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--code-bg);
-  color: var(--text-h);
-  cursor: pointer;
-}
-
-.filter-pill.active {
-  background: var(--accent);
-  color: var(--bg);
-  border-color: var(--accent);
-}
-
 .plist-card {
   border: 1px solid var(--border);
   border-radius: 14px;
