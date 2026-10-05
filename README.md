@@ -7,11 +7,21 @@ Think of it as a living history: who worked on what, how much it cost, what's st
 ## What's in it
 
 - **Home** — a daily-use dashboard for the currently selected property: a status overview, current projects with inline checklists, and a customizable side panel (quick notes, recent activity, or an upcoming-dates mini calendar)
-- **Projects** — every project for the property, filterable by status (idea, researching, getting quotes, scheduled, in progress, completed)
-- **Ideas** — the "someday" list: things you're thinking about but haven't committed to yet
+- **Projects** — every project for the property, filterable by status (idea, researching, getting quotes, scheduled, in progress, completed); click into any project card for the full detail view
+- **Project detail view** — click a project card to open a tabbed page for that project:
+  - **Overview** — budget, amount paid so far, contractor, target date, next action, and free-text notes
+  - **Checklist** — the project's task list (toggle, add, remove, reorder)
+  - **Quotes** — log multiple contractor quotes side by side, each with a status (pending/accepted/declined) and an optional attached photo or PDF of the actual quote
+  - **Inspo** — a simple photo gallery for design inspiration
+  - **Before & After** — before/during/after photos in clearly separated sections; pair an after photo with the before shot it matches for a side-by-side comparison card
+  - **Wishlist** — items under consideration, with price, priority, link, and status
+  - **Documents** — receipts, contracts, permits, warranties (with expiration tracking and an expired-item flag)
+  - **Payments** — logged payments with a running total that rolls up into the Overview tab
+  - **Timeline** — milestones with target/actual dates and a "mark done" action
+- **Ideas** — the "someday" list: things you're thinking about but haven't committed to yet (cards are clickable here too)
 - **People** — a contractor roster, automatically built from who's attached to which projects
 - **Money** — completed vs. planned spending, broken down by category
-- **History** — a chronological timeline of everything that's happened on the property
+- **History** — a chronological timeline of everything that's happened on the property, with multi-select Year/Quarter/Month filter dropdowns (checkbox-based, so you can view e.g. 2026 + 2024 at once)
 - **Add Project** — a form to log a new project against whichever property is currently selected
 - **Multi-property support** — switch between properties (a house, a car, anything else) from the sidebar; everything on screen scopes to whichever one is selected
 
@@ -38,6 +48,7 @@ This is an active work-in-progress, built as a learning project. Right now:
 
 - All project data lives in-memory (`src/data/mockProjects.js` seeds it, then it's held in React state) — changes made while using the app are **not** persisted and reset on reload
 - Quick notes and the Home side-panel selection persist across reloads via `localStorage`, since there's no backend yet
+- Photos and attached files (quotes, documents, inspo, before/after) use in-browser object URLs — they display normally for the session but are **not** saved anywhere and disappear on reload, same as the rest of the project data
 - There's no authentication and no real database — a Supabase-backed version is planned but not yet connected
 - Checklist "typical tasks" are curated by hand rather than generated live by AI, which would require a backend to call an API from safely
 
@@ -51,6 +62,9 @@ src/
   lib/projectMeta.js       # shared status/category/date/cost helpers
   components/              # one file per page (ProjectsView, MoneyView, etc.)
                             # plus shared pieces (Sidebar, AddProjectModal, checklist UI)
+                            # ProjectDetailView.jsx holds the tabbed project detail page
+                            # (Overview, Checklist, Quotes, Inspo, Before & After,
+                            # Wishlist, Documents, Payments, Timeline)
 ```
 
 ## Development workflow
