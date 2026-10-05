@@ -63,8 +63,8 @@ src/
   components/              # one file per page (ProjectsView, MoneyView, etc.)
                             # plus shared pieces (Sidebar, AddProjectModal, checklist UI)
                             # ProjectDetailView.jsx holds the tabbed project detail page
-                            # (Overview, Quotes, Inspo, Before & After, Wishlist,
-                            # Documents, Payments, Timeline)
+                            # (Overview, Checklist, Quotes, Inspo, Before & After,
+                            # Wishlist, Documents, Payments, Timeline)
 ```
 
 ## Development workflow
