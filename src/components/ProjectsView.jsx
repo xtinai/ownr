@@ -13,7 +13,7 @@ const FILTERS = [
   { key: 'completed', label: STATUS.completed.label },
 ]
 
-function ProjectsView({ property, projects, onAddProject }) {
+function ProjectsView({ property, projects, onAddProject, onOpenProject }) {
   const [filter, setFilter] = useState('all')
 
   const filtered = filter === 'all' ? projects : projects.filter((p) => p.status === filter)
@@ -73,7 +73,13 @@ function ProjectsView({ property, projects, onAddProject }) {
 
       <div className="project-grid">
         {filtered.length > 0 ? (
-          filtered.map((project) => <ProjectListCard key={project.id} project={project} />)
+          filtered.map((project) => (
+            <ProjectListCard
+              key={project.id}
+              project={project}
+              onClick={() => onOpenProject(project.id)}
+            />
+          ))
         ) : (
           <p className="empty-note">No projects match this filter yet.</p>
         )}

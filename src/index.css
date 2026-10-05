@@ -15,6 +15,8 @@
   --tan-text: #7a5f2d;
   --sage-bg: #dbe8dc;
   --sage-text: #2f4a34;
+  --warn-bg: #f3dad7;
+  --warn-text: #9a3b32;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: 'Lora', Georgia, 'Times New Roman', serif;
@@ -53,6 +55,8 @@
     --tan-text: #e0c98f;
     --sage-bg: rgba(219, 232, 220, 0.12);
     --sage-text: #a9c9ac;
+    --warn-bg: rgba(224, 120, 107, 0.16);
+    --warn-text: #e4a39a;
   }
 
   #social .button-icon {

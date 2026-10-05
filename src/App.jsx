@@ -222,6 +222,10 @@ function App() {
     })
   }
 
+  function handleUpdateProject(projectId, updater) {
+    setAllProjects((prev) => prev.map((p) => (p.id === projectId ? updater(p) : p)))
+  }
+
   function handleAddProject(fields) {
     setAllProjects((prev) => {
       const newId = Math.max(0, ...prev.map((p) => p.id)) + 1
@@ -267,6 +271,7 @@ function App() {
             onAddItem={handleAddChecklistItem}
             onRemoveItem={handleRemoveChecklistItem}
             onMoveItem={handleMoveChecklistItem}
+            onUpdateProject={handleUpdateProject}
           />
         ) : (
           <>
@@ -283,6 +288,7 @@ function App() {
                 property={selectedProperty}
                 projects={propertyProjects}
                 onAddProject={() => setShowAddProject(true)}
+                onOpenProject={setSelectedProjectId}
               />
             )}
             {activeNav === 'ideas' && (
@@ -290,6 +296,7 @@ function App() {
                 property={selectedProperty}
                 projects={propertyProjects}
                 onAddProject={() => setShowAddProject(true)}
+                onOpenProject={setSelectedProjectId}
               />
             )}
             {activeNav === 'people' && (
