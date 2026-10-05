@@ -24,31 +24,38 @@ const QUARTERS = [
   { value: '4', label: 'Q4' },
 ]
 
+/** Extracts the four-digit year from an ISO-style date string. */
 function getYear(dateStr) {
   return dateStr.slice(0, 4)
 }
 
+/** Extracts the two-digit month from an ISO-style date string. */
 function getMonth(dateStr) {
   return dateStr.slice(5, 7)
 }
 
+/** Derives the calendar quarter ('1'-'4') from an ISO-style date string. */
 function getQuarter(dateStr) {
   return String(Math.ceil(Number(getMonth(dateStr)) / 3))
 }
 
+/** Adds `value` to `list` if absent, or removes it if already present. */
 function toggleValue(list, value) {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
 }
 
+/** Dropdown control that lets a user toggle multiple checkbox options and closes on outside click or Escape. */
 function MultiSelectDropdown({ label, options, selected, onToggle }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
 
   useEffect(() => {
     if (!open) return undefined
+    /** Closes the dropdown when a click occurs outside of it. */
     function handleClickOutside(e) {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false)
     }
+    /** Closes the dropdown when the Escape key is pressed. */
     function handleEscape(e) {
       if (e.key === 'Escape') setOpen(false)
     }
@@ -92,6 +99,7 @@ function MultiSelectDropdown({ label, options, selected, onToggle }) {
   )
 }
 
+/** Renders the project history timeline with Year/Quarter/Month multi-select filters. */
 function HistoryView({ property, projects, onAddProject }) {
   const [selectedYears, setSelectedYears] = useState([])
   const [selectedQuarters, setSelectedQuarters] = useState([])
@@ -115,6 +123,7 @@ function HistoryView({ property, projects, onAddProject }) {
   const hasActiveFilters =
     selectedYears.length > 0 || selectedQuarters.length > 0 || selectedMonths.length > 0
 
+  /** Resets all active Year/Quarter/Month filter selections. */
   function clearFilters() {
     setSelectedYears([])
     setSelectedQuarters([])
