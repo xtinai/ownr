@@ -41,7 +41,12 @@ function ProjectDetailView({
   }
 
   function removeRecord(key, id) {
-    onUpdateProject(project.id, (p) => ({ ...p, [key]: (p[key] || []).filter((r) => r.id !== id) }))
+    onUpdateProject(project.id, (p) => {
+      const removed = (p[key] || []).find((r) => r.id === id)
+      if (removed?.url) URL.revokeObjectURL(removed.url)
+      if (removed?.fileUrl) URL.revokeObjectURL(removed.fileUrl)
+      return { ...p, [key]: (p[key] || []).filter((r) => r.id !== id) }
+    })
   }
 
   function updateRecord(key, id, patch) {
@@ -177,7 +182,9 @@ function ProjectDetailView({
 
 function OverviewTab({ project, onUpdateField }) {
   const [notes, setNotes] = useState(project.notes || '')
-  const paidSoFar = (project.payments || []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
+  const paidSoFar = (project.payments || [])
+    .filter((p) => p.status === 'paid')
+    .reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
 
   return (
     <div className="overview-tab">
@@ -802,7 +809,9 @@ function PaymentsTab({ projectId, payments, budgetEstimated, onAdd, onRemove }) 
     setForm({ amount: '', paidTo: '', date: '', status: 'paid' })
   }
 
-  const total = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
+  const total = payments
+    .filter((p) => p.status === 'paid')
+    .reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
 
   return (
     <div className="record-tab">
