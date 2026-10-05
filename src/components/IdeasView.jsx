@@ -2,7 +2,7 @@ import ProjectListCard from './ProjectListCard'
 
 const PLANNED_STATUSES = ['idea', 'planning']
 
-function IdeasView({ projects, onAddProject }) {
+function IdeasView({ projects, onAddProject, onOpenProject }) {
   const ideas = projects.filter((p) => PLANNED_STATUSES.includes(p.status))
 
   return (
@@ -23,7 +23,13 @@ function IdeasView({ projects, onAddProject }) {
 
       <div className="project-grid">
         {ideas.length > 0 ? (
-          ideas.map((project) => <ProjectListCard key={project.id} project={project} />)
+          ideas.map((project) => (
+            <ProjectListCard
+              key={project.id}
+              project={project}
+              onClick={() => onOpenProject(project.id)}
+            />
+          ))
         ) : (
           <p className="empty-note">No ideas on the list yet.</p>
         )}

@@ -1,11 +1,22 @@
 import { STATUS, CATEGORY_ICONS, formatCost } from '../lib/projectMeta'
 
-function ProjectListCard({ project }) {
+function ProjectListCard({ project, onClick }) {
   const budget = formatCost(project.budget_actual ?? project.budget_estimated)
   const isCompleted = project.status === 'completed'
 
   return (
-    <div className="plist-card">
+    <div
+      className="plist-card"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick()
+        }
+      }}
+    >
       <div className="plist-card-top">
         <span className="plist-icon">{CATEGORY_ICONS[project.category] || '📦'}</span>
         <span className={`badge badge-${project.status}`}>{STATUS[project.status].label}</span>
