@@ -18,7 +18,6 @@ Think of it as a living history: who worked on what, how much it cost, what's st
   - **Documents** — receipts, contracts, permits, warranties (with expiration tracking and an expired-item flag)
   - **Payments** — logged payments with a running total that rolls up into the Overview tab
   - **Timeline** — milestones with target/actual dates and a "mark done" action
-- **Ideas** — the "someday" list: things you're thinking about but haven't committed to yet (cards are clickable here too)
 - **People** — a contractor roster, automatically built from who's attached to which projects
 - **Money** — completed vs. planned spending, broken down by category
 - **History** — a chronological timeline of everything that's happened on the property, with multi-select Year/Quarter/Month filter dropdowns (checkbox-based, so you can view e.g. 2026 + 2024 at once)
@@ -46,9 +45,9 @@ npm run lint      # run ESLint
 
 This is an active work-in-progress, built as a learning project. Right now:
 
-- All project data lives in-memory (`src/data/mockProjects.js` seeds it, then it's held in React state) — changes made while using the app are **not** persisted and reset on reload
-- Quick notes and the Home side-panel selection persist across reloads via `localStorage`, since there's no backend yet
-- Photos and attached files (quotes, documents, inspo, before/after) use in-browser object URLs — they display normally for the session but are **not** saved anywhere and disappear on reload, same as the rest of the project data
+- `src/data/mockProjects.js` only seeds the app the very first time it loads — after that, all project data (including anything you add or edit) is saved to `localStorage` on every change and restored automatically on reload, since there's no backend yet
+- Quick notes and the Home side-panel selection also persist across reloads via `localStorage`
+- Photos and attached files (quotes, documents, inspo, before/after) are the one exception — they use in-browser object URLs, which stop working the moment the page reloads, so they display normally for the session but disappear on reload even though the rest of that record (contractor, amount, caption, etc.) is saved
 - There's no authentication and no real database — a Supabase-backed version is planned but not yet connected
 - Checklist "typical tasks" are curated by hand rather than generated live by AI, which would require a backend to call an API from safely
 

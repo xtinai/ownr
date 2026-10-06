@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import Sidebar from './components/Sidebar'
 import ProjectsView from './components/ProjectsView'
-import IdeasView from './components/IdeasView'
 import PeopleView from './components/PeopleView'
 import MoneyView from './components/MoneyView'
 import HistoryView from './components/HistoryView'
@@ -16,6 +15,45 @@ import { STATUS, formatCost, getGreeting } from './lib/projectMeta'
 const ACTIVE_STATUSES = ['quoting', 'scheduled', 'in_progress']
 const PLANNED_STATUSES = ['idea', 'planning']
 const USER_NAME = 'Christina'
+
+const STORAGE_KEY = 'ownr-app-state'
+
+function loadPersistedState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+// Uploaded photos/files use in-browser blob URLs, which stop working the
+// moment the page reloads — so there's nothing worth persisting there.
+// Strip them before writing to localStorage instead of saving dead links.
+function sanitizeProjectsForStorage(projects) {
+  return projects.map((project) => {
+    const clean = { ...project }
+    if (clean.quotes) {
+      clean.quotes = clean.quotes.map((q) =>
+        q.fileUrl?.startsWith('blob:') ? { ...q, fileUrl: null, fileIsImage: false } : q,
+      )
+    }
+    if (clean.documents) {
+      clean.documents = clean.documents.map((d) =>
+        d.fileUrl?.startsWith('blob:') ? { ...d, fileUrl: null } : d,
+      )
+    }
+    if (clean.inspoPhotos) {
+      clean.inspoPhotos = clean.inspoPhotos.filter((p) => !p.url?.startsWith('blob:'))
+    }
+    if (clean.beforeAfterPhotos) {
+      clean.beforeAfterPhotos = clean.beforeAfterPhotos.filter((p) => !p.url?.startsWith('blob:'))
+    }
+    return clean
+  })
+}
+
+const initialPersistedState = loadPersistedState()
 
 function StatusBadge({ status }) {
   return <span className={`badge badge-${status}`}>{STATUS[status].label}</span>
@@ -178,11 +216,32 @@ function ComingSoonView({ label }) {
 }
 
 function App() {
-  const [activeNav, setActiveNav] = useState('home')
-  const [selectedPropertyId, setSelectedPropertyId] = useState(properties[0].id)
-  const [allProjects, setAllProjects] = useState(mockProjects)
-  const [selectedProjectId, setSelectedProjectId] = useState(null)
+  const [activeNav, setActiveNav] = useState(initialPersistedState?.activeNav ?? 'home')
+  const [selectedPropertyId, setSelectedPropertyId] = useState(
+    initialPersistedState?.selectedPropertyId ?? properties[0].id,
+  )
+  const [allProjects, setAllProjects] = useState(initialPersistedState?.allProjects ?? mockProjects)
+  const [selectedProjectId, setSelectedProjectId] = useState(
+    initialPersistedState?.selectedProjectId ?? null,
+  )
   const [showAddProject, setShowAddProject] = useState(false)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          activeNav,
+          selectedPropertyId,
+          selectedProjectId,
+          allProjects: sanitizeProjectsForStorage(allProjects),
+        }),
+      )
+    } catch {
+      // Storage unavailable (private browsing, quota exceeded, etc.) —
+      // state just won't persist across reloads.
+    }
+  }, [activeNav, selectedPropertyId, selectedProjectId, allProjects])
 
   const selectedProperty = properties.find((p) => p.id === selectedPropertyId)
   const propertyProjects = allProjects.filter((p) => p.property_id === selectedPropertyId)
@@ -291,14 +350,6 @@ function App() {
                 onOpenProject={setSelectedProjectId}
               />
             )}
-            {activeNav === 'ideas' && (
-              <IdeasView
-                property={selectedProperty}
-                projects={propertyProjects}
-                onAddProject={() => setShowAddProject(true)}
-                onOpenProject={setSelectedProjectId}
-              />
-            )}
             {activeNav === 'people' && (
               <PeopleView
                 property={selectedProperty}
@@ -320,7 +371,7 @@ function App() {
                 onAddProject={() => setShowAddProject(true)}
               />
             )}
-            {!['home', 'projects', 'ideas', 'people', 'money', 'history'].includes(activeNav) && (
+            {!['home', 'projects', 'people', 'money', 'history'].includes(activeNav) && (
               <ComingSoonView label={activeNav[0].toUpperCase() + activeNav.slice(1)} />
             )}
           </>
