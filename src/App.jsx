@@ -68,7 +68,18 @@ function loadPersistedState() {
       parsed.allProjects.every(isValidPersistedProject) &&
       (parsed.selectedProjectId === null ||
         parsed.allProjects.some((project) => project.id === parsed.selectedProjectId))
-    return valid ? parsed : null
+    if (valid) return parsed
+
+    // Rejected data is still real data someone had — don't let the next
+    // autosave silently overwrite and permanently lose it. Keep a raw copy
+    // around under a separate key instead of just falling through to seed
+    // data (which the save effect would otherwise write right over it).
+    try {
+      localStorage.setItem(`${STORAGE_KEY}-rejected`, raw)
+    } catch {
+      // Best effort — if this also fails there's nothing more to do.
+    }
+    return null
   } catch {
     return null
   }
