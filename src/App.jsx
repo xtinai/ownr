@@ -18,10 +18,57 @@ const USER_NAME = 'Christina'
 
 const STORAGE_KEY = 'ownr-app-state'
 
+const PROJECT_COLLECTIONS = [
+  'checklist',
+  'quotes',
+  'inspoPhotos',
+  'beforeAfterPhotos',
+  'wishlist',
+  'documents',
+  'payments',
+  'milestones',
+]
+
+function isRecord(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+function isValidPersistedProject(project) {
+  return (
+    isRecord(project) &&
+    Number.isInteger(project.id) &&
+    Number.isInteger(project.property_id) &&
+    properties.some((property) => property.id === project.property_id) &&
+    typeof project.title === 'string' &&
+    typeof project.category === 'string' &&
+    typeof project.status === 'string' &&
+    Object.prototype.hasOwnProperty.call(STATUS, project.status) &&
+    PROJECT_COLLECTIONS.every(
+      (key) => project[key] === undefined || (Array.isArray(project[key]) && project[key].every(isRecord)),
+    )
+  )
+}
+
+// A malformed value here (corrupted storage, a manual edit in DevTools, a
+// future schema change) would otherwise crash the app on every reload with
+// no way to recover short of clearing browser storage — so validate the
+// shape before trusting it, and just fall back to the seed data if it
+// doesn't look right.
 function loadPersistedState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : null
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    const valid =
+      isRecord(parsed) &&
+      typeof parsed.activeNav === 'string' &&
+      parsed.activeNav.length > 0 &&
+      properties.some((property) => property.id === parsed.selectedPropertyId) &&
+      Array.isArray(parsed.allProjects) &&
+      parsed.allProjects.every(isValidPersistedProject) &&
+      (parsed.selectedProjectId === null ||
+        parsed.allProjects.some((project) => project.id === parsed.selectedProjectId))
+    return valid ? parsed : null
   } catch {
     return null
   }
