@@ -13,6 +13,41 @@
 // `target_date` (only on active-status projects) is an ESTIMATED placeholder —
 // there's no real target-date field or user input for this yet. Powers the
 // Upcoming/mini-calendar widget on Home.
+//
+// The "Sliding Driveway Gate" project (id 2) also carries fully fleshed-out
+// example data for every project-detail tab — quotes, wishlist, documents,
+// payments, timeline, notes, and photos — so the tabbed detail view has
+// something to show the first time you open it. All of it is INVENTED
+// illustrative content, not a real quote history, and the photo entries
+// point at inline SVG placeholders rather than real photos. Replace or
+// clear it whenever real data (or a real photo) is available.
+
+const PLACEHOLDER_INSPO_PHOTO =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300">' +
+      '<rect width="400" height="300" fill="#dbe8dc"/>' +
+      '<text x="50%" y="50%" font-family="sans-serif" font-size="20" fill="#2f4a34" text-anchor="middle" dy=".3em">Inspo placeholder</text>' +
+      '</svg>',
+  )
+
+const PLACEHOLDER_BEFORE_PHOTO =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300">' +
+      '<rect width="400" height="300" fill="#efe1c9"/>' +
+      '<text x="50%" y="50%" font-family="sans-serif" font-size="20" fill="#7a5f2d" text-anchor="middle" dy=".3em">Before placeholder</text>' +
+      '</svg>',
+  )
+
+const PLACEHOLDER_AFTER_PHOTO =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300">' +
+      '<rect width="400" height="300" fill="#dbe8dc"/>' +
+      '<text x="50%" y="50%" font-family="sans-serif" font-size="20" fill="#2f4a34" text-anchor="middle" dy=".3em">After placeholder</text>' +
+      '</svg>',
+  )
 
 export const properties = [
   {
@@ -48,23 +83,171 @@ export const mockProjects = [
     property_id: 1,
     title: 'Sliding Driveway Gate',
     category: 'Exterior',
-    status: 'quoting',
-    budget_estimated: null,
+    status: 'scheduled',
+    budget_estimated: 3850,
     budget_actual: null,
-    contractor: null,
+    contractor: 'Golden Gate Gates',
     target_date: '2026-10-15',
-    next_action: 'Compare final quote and pedestrian-gate design',
+    next_action: 'Confirm installation date with Golden Gate Gates',
     logged_date: '2026-08-15',
+    notes:
+      'HOA requires the gate to sit at least 5ft back from the sidewalk. ' +
+      'Pedestrian gate needs separate hinge hardware — confirm with installer before install day.',
     checklist: [
       { id: '2-1', text: 'Measure driveway opening and confirm gate width', done: true },
       { id: '2-2', text: 'Get quotes from gate contractors', done: true },
-      { id: '2-3', text: 'Choose gate style and material', done: false },
+      { id: '2-3', text: 'Choose gate style and material', done: true },
       { id: '2-4', text: 'Confirm pedestrian gate placement and safety sightlines', done: false },
-      { id: '2-5', text: 'Check HOA / permit requirements', done: false },
-      { id: '2-6', text: 'Schedule installation date', done: false },
+      { id: '2-5', text: 'Check HOA / permit requirements', done: true },
+      { id: '2-6', text: 'Schedule installation date', done: true },
       { id: '2-7', text: 'Install gate posts and hardware', done: false },
       { id: '2-8', text: 'Install automatic opener and safety sensors', done: false },
       { id: '2-9', text: 'Final walkthrough and test', done: false },
+    ],
+    quotes: [
+      {
+        id: '2-quote-1',
+        contractor: 'Bay Area Fence Co.',
+        amount: 3200,
+        date: '2026-08-20',
+        notes: 'Includes pedestrian gate and powder-coated finish.',
+        status: 'pending',
+        fileUrl: null,
+        fileIsImage: false,
+      },
+      {
+        id: '2-quote-2',
+        contractor: 'Golden Gate Gates',
+        amount: 3850,
+        date: '2026-08-22',
+        notes: 'Higher-end opener with a 2-year motor warranty.',
+        status: 'accepted',
+        fileUrl: null,
+        fileIsImage: false,
+      },
+      {
+        id: '2-quote-3',
+        contractor: 'West Coast Gate & Fence',
+        amount: 2950,
+        date: '2026-08-25',
+        notes: 'Lowest bid, but only a 90-day warranty on parts.',
+        status: 'declined',
+        fileUrl: null,
+        fileIsImage: false,
+      },
+    ],
+    wishlist: [
+      {
+        id: '2-wish-1',
+        item: 'Solar-powered keypad entry',
+        price: 180,
+        link: '',
+        priority: 'medium',
+        status: 'considering',
+      },
+      {
+        id: '2-wish-2',
+        item: 'Wrought iron pedestrian gate to match',
+        price: 450,
+        link: '',
+        priority: 'high',
+        status: 'considering',
+      },
+      {
+        id: '2-wish-3',
+        item: 'Smart video intercom add-on',
+        price: 220,
+        link: '',
+        priority: 'low',
+        status: 'rejected',
+      },
+    ],
+    documents: [
+      {
+        id: '2-doc-1',
+        name: 'Golden Gate Gates — signed estimate',
+        type: 'contract',
+        date: '2026-08-22',
+        expirationDate: null,
+        fileUrl: null,
+      },
+      {
+        id: '2-doc-2',
+        name: 'HOA gate design approval',
+        type: 'permit',
+        date: '2026-09-01',
+        expirationDate: null,
+        fileUrl: null,
+      },
+      {
+        id: '2-doc-3',
+        name: 'Opener motor warranty card',
+        type: 'warranty',
+        date: '2026-08-22',
+        expirationDate: '2028-08-22',
+        fileUrl: null,
+      },
+    ],
+    payments: [
+      {
+        id: '2-payment-1',
+        amount: 1000,
+        paidTo: 'Golden Gate Gates',
+        date: '2026-09-02',
+        status: 'paid',
+      },
+      {
+        id: '2-payment-2',
+        amount: 2850,
+        paidTo: 'Golden Gate Gates',
+        date: null,
+        status: 'pending',
+      },
+    ],
+    milestones: [
+      {
+        id: '2-milestone-1',
+        name: 'HOA design approval',
+        targetDate: '2026-09-01',
+        actualDate: '2026-09-01',
+        status: 'done',
+      },
+      {
+        id: '2-milestone-2',
+        name: 'Deposit paid to Golden Gate Gates',
+        targetDate: '2026-09-02',
+        actualDate: '2026-09-02',
+        status: 'done',
+      },
+      {
+        id: '2-milestone-3',
+        name: 'Installation day',
+        targetDate: '2026-10-15',
+        actualDate: null,
+        status: 'upcoming',
+      },
+    ],
+    inspoPhotos: [
+      {
+        id: '2-inspo-1',
+        url: PLACEHOLDER_INSPO_PHOTO,
+        caption: 'Placeholder — swap in a real inspo photo (black powder-coated sliding gate style)',
+      },
+    ],
+    beforeAfterPhotos: [
+      {
+        id: '2-ba-1',
+        url: PLACEHOLDER_BEFORE_PHOTO,
+        caption: 'Placeholder — swap in your real before photo',
+        tag: 'before',
+      },
+      {
+        id: '2-ba-2',
+        url: PLACEHOLDER_AFTER_PHOTO,
+        caption: 'Placeholder — swap in your real after photo',
+        tag: 'after',
+        pairedBeforeId: '2-ba-1',
+      },
     ],
   },
   {
