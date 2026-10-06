@@ -55,34 +55,50 @@ function isValidPersistedProject(project) {
 // shape before trusting it, and just fall back to the seed data if it
 // doesn't look right.
 function loadPersistedState() {
+  let raw
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw)
-    const valid =
-      isRecord(parsed) &&
-      typeof parsed.activeNav === 'string' &&
-      parsed.activeNav.length > 0 &&
-      properties.some((property) => property.id === parsed.selectedPropertyId) &&
-      Array.isArray(parsed.allProjects) &&
-      parsed.allProjects.every(isValidPersistedProject) &&
-      (parsed.selectedProjectId === null ||
-        parsed.allProjects.some((project) => project.id === parsed.selectedProjectId))
-    if (valid) return parsed
+    raw = localStorage.getItem(STORAGE_KEY)
+  } catch {
+    return null
+  }
+  if (!raw) return null
 
-    // Rejected data is still real data someone had — don't let the next
-    // autosave silently overwrite and permanently lose it. Keep a raw copy
-    // around under a separate key instead of just falling through to seed
-    // data (which the save effect would otherwise write right over it).
+  // Rejected data is still real data someone had — don't let the next
+  // autosave silently overwrite and permanently lose it. Keep a raw copy
+  // around under a separate key instead of just falling through to seed
+  // data (which the save effect would otherwise write right over it).
+  // Covers both an unparseable value and one that parses but fails
+  // validation below.
+  function backupRejected() {
     try {
       localStorage.setItem(`${STORAGE_KEY}-rejected`, raw)
     } catch {
       // Best effort — if this also fails there's nothing more to do.
     }
-    return null
+  }
+
+  let parsed
+  try {
+    parsed = JSON.parse(raw)
   } catch {
+    backupRejected()
     return null
   }
+
+  const valid =
+    isRecord(parsed) &&
+    typeof parsed.activeNav === 'string' &&
+    parsed.activeNav.length > 0 &&
+    properties.some((property) => property.id === parsed.selectedPropertyId) &&
+    Array.isArray(parsed.allProjects) &&
+    parsed.allProjects.every(isValidPersistedProject) &&
+    (parsed.selectedProjectId === null ||
+      parsed.allProjects.some((project) => project.id === parsed.selectedProjectId))
+
+  if (valid) return parsed
+
+  backupRejected()
+  return null
 }
 
 // Uploaded photos/files use in-browser blob URLs, which stop working the
