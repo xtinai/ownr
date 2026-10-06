@@ -4,7 +4,6 @@ import './Sidebar.css'
 const NAV_ITEMS = [
   { key: 'home', label: 'Home', icon: '🏠' },
   { key: 'projects', label: 'Projects', icon: '📋' },
-  { key: 'ideas', label: 'Ideas', icon: '💡' },
   { key: 'people', label: 'People', icon: '👥' },
   { key: 'money', label: 'Money', icon: '💰' },
   { key: 'history', label: 'History', icon: '🕐' },

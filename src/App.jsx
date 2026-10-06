@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import Sidebar from './components/Sidebar'
 import ProjectsView from './components/ProjectsView'
-import IdeasView from './components/IdeasView'
 import PeopleView from './components/PeopleView'
 import MoneyView from './components/MoneyView'
 import HistoryView from './components/HistoryView'
@@ -16,6 +15,157 @@ import { STATUS, formatCost, getGreeting } from './lib/projectMeta'
 const ACTIVE_STATUSES = ['quoting', 'scheduled', 'in_progress']
 const PLANNED_STATUSES = ['idea', 'planning']
 const USER_NAME = 'Christina'
+
+const STORAGE_KEY = 'ownr-app-state'
+
+const PROJECT_COLLECTIONS = [
+  'checklist',
+  'quotes',
+  'inspoPhotos',
+  'beforeAfterPhotos',
+  'wishlist',
+  'documents',
+  'payments',
+  'milestones',
+]
+
+function isRecord(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+function isValidPersistedProject(project) {
+  return (
+    isRecord(project) &&
+    Number.isInteger(project.id) &&
+    Number.isInteger(project.property_id) &&
+    properties.some((property) => property.id === project.property_id) &&
+    typeof project.title === 'string' &&
+    typeof project.category === 'string' &&
+    typeof project.status === 'string' &&
+    Object.prototype.hasOwnProperty.call(STATUS, project.status) &&
+    PROJECT_COLLECTIONS.every(
+      (key) => project[key] === undefined || (Array.isArray(project[key]) && project[key].every(isRecord)),
+    )
+  )
+}
+
+// A malformed value here (corrupted storage, a manual edit in DevTools, a
+// future schema change) would otherwise crash the app on every reload with
+// no way to recover short of clearing browser storage — so validate the
+// shape before trusting it, and just fall back to the seed data if it
+// doesn't look right.
+function loadPersistedState() {
+  let raw
+  try {
+    raw = localStorage.getItem(STORAGE_KEY)
+  } catch {
+    return null
+  }
+  if (!raw) return null
+
+  // Rejected data is still real data someone had — don't let the next
+  // autosave silently overwrite and permanently lose it. Keep a raw copy
+  // around under a separate key instead of just falling through to seed
+  // data (which the save effect would otherwise write right over it).
+  // Covers both an unparseable value and one that parses but fails
+  // validation below.
+  function backupRejected() {
+    try {
+      localStorage.setItem(`${STORAGE_KEY}-rejected`, raw)
+    } catch {
+      // Best effort — if this also fails there's nothing more to do.
+    }
+  }
+
+  let parsed
+  try {
+    parsed = JSON.parse(raw)
+  } catch {
+    backupRejected()
+    return null
+  }
+
+  const valid =
+    isRecord(parsed) &&
+    typeof parsed.activeNav === 'string' &&
+    parsed.activeNav.length > 0 &&
+    properties.some((property) => property.id === parsed.selectedPropertyId) &&
+    Array.isArray(parsed.allProjects) &&
+    parsed.allProjects.every(isValidPersistedProject) &&
+    (parsed.selectedProjectId === null ||
+      parsed.allProjects.some((project) => project.id === parsed.selectedProjectId))
+
+  if (valid) return parsed
+
+  backupRejected()
+  return null
+}
+
+// Uploaded photos/files use in-browser blob URLs, which stop working the
+// moment the page reloads — so there's nothing worth persisting there.
+// Strip them before writing to localStorage instead of saving dead links.
+function sanitizeProjectsForStorage(projects) {
+  return projects.map((project) => {
+    const clean = { ...project }
+    if (clean.quotes) {
+      clean.quotes = clean.quotes.map((q) =>
+        q.fileUrl?.startsWith('blob:') ? { ...q, fileUrl: null, fileIsImage: false } : q,
+      )
+    }
+    if (clean.documents) {
+      clean.documents = clean.documents.map((d) =>
+        d.fileUrl?.startsWith('blob:') ? { ...d, fileUrl: null } : d,
+      )
+    }
+    if (clean.inspoPhotos) {
+      clean.inspoPhotos = clean.inspoPhotos.filter((p) => !p.url?.startsWith('blob:'))
+    }
+    if (clean.beforeAfterPhotos) {
+      clean.beforeAfterPhotos = clean.beforeAfterPhotos.filter((p) => !p.url?.startsWith('blob:'))
+    }
+    return clean
+  })
+}
+
+// When another tab's save arrives here, its snapshot was sanitized before
+// being written — any photo or file this tab uploaded locally (blob URLs
+// only ever work in the tab that created them, so they were never in that
+// snapshot to begin with) would otherwise just disappear from view the
+// moment it's adopted. Re-attach anything local-only instead of losing it.
+function mergeLocalBlobData(currentProjects, incomingProjects) {
+  return incomingProjects.map((incoming) => {
+    const current = currentProjects.find((p) => p.id === incoming.id)
+    if (!current) return incoming
+
+    const merged = { ...incoming }
+
+    for (const key of ['inspoPhotos', 'beforeAfterPhotos']) {
+      if (!current[key]) continue
+      const incomingIds = new Set((incoming[key] || []).map((p) => p.id))
+      const localOnlyBlobPhotos = current[key].filter(
+        (p) => p.url?.startsWith('blob:') && !incomingIds.has(p.id),
+      )
+      if (localOnlyBlobPhotos.length > 0) {
+        merged[key] = [...(incoming[key] || []), ...localOnlyBlobPhotos]
+      }
+    }
+
+    for (const key of ['quotes', 'documents']) {
+      if (!current[key] || !incoming[key]) continue
+      merged[key] = incoming[key].map((incomingRecord) => {
+        const currentRecord = current[key].find((r) => r.id === incomingRecord.id)
+        if (!incomingRecord.fileUrl && currentRecord?.fileUrl?.startsWith('blob:')) {
+          return { ...incomingRecord, fileUrl: currentRecord.fileUrl, fileIsImage: currentRecord.fileIsImage }
+        }
+        return incomingRecord
+      })
+    }
+
+    return merged
+  })
+}
+
+const initialPersistedState = loadPersistedState()
 
 function StatusBadge({ status }) {
   return <span className={`badge badge-${status}`}>{STATUS[status].label}</span>
@@ -178,11 +328,61 @@ function ComingSoonView({ label }) {
 }
 
 function App() {
-  const [activeNav, setActiveNav] = useState('home')
-  const [selectedPropertyId, setSelectedPropertyId] = useState(properties[0].id)
-  const [allProjects, setAllProjects] = useState(mockProjects)
-  const [selectedProjectId, setSelectedProjectId] = useState(null)
+  const [activeNav, setActiveNav] = useState(initialPersistedState?.activeNav ?? 'home')
+  const [selectedPropertyId, setSelectedPropertyId] = useState(
+    initialPersistedState?.selectedPropertyId ?? properties[0].id,
+  )
+  const [allProjects, setAllProjects] = useState(initialPersistedState?.allProjects ?? mockProjects)
+  const [selectedProjectId, setSelectedProjectId] = useState(
+    initialPersistedState?.selectedProjectId ?? null,
+  )
   const [showAddProject, setShowAddProject] = useState(false)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          activeNav,
+          selectedPropertyId,
+          selectedProjectId,
+          allProjects: sanitizeProjectsForStorage(allProjects),
+        }),
+      )
+    } catch {
+      // Storage unavailable (private browsing, quota exceeded, etc.) —
+      // state just won't persist across reloads.
+    }
+  }, [activeNav, selectedPropertyId, selectedProjectId, allProjects])
+
+  // If another tab (same browser, same device) saves a change, pick up its
+  // project data here too — otherwise this tab's next save would overwrite
+  // that edit with its own now-stale copy. Only project data syncs this
+  // way; each tab keeps its own page/property navigation.
+  useEffect(() => {
+    function handleStorageChange(event) {
+      if (event.key !== STORAGE_KEY || !event.newValue) return
+      try {
+        const parsed = JSON.parse(event.newValue)
+        if (!Array.isArray(parsed.allProjects) || !parsed.allProjects.every(isValidPersistedProject)) {
+          return
+        }
+        setAllProjects((current) => {
+          const merged = mergeLocalBlobData(current, parsed.allProjects)
+          // Bail out when nothing actually changed — adopting a new array
+          // reference here anyway would trigger this tab's own save effect,
+          // which would re-fire the storage event this handler listens for,
+          // bouncing back and forth between tabs forever.
+          return JSON.stringify(current) === JSON.stringify(merged) ? current : merged
+        })
+      } catch {
+        // Not valid JSON / not the shape we expect — ignore and keep
+        // whatever this tab already has.
+      }
+    }
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
 
   const selectedProperty = properties.find((p) => p.id === selectedPropertyId)
   const propertyProjects = allProjects.filter((p) => p.property_id === selectedPropertyId)
@@ -291,14 +491,6 @@ function App() {
                 onOpenProject={setSelectedProjectId}
               />
             )}
-            {activeNav === 'ideas' && (
-              <IdeasView
-                property={selectedProperty}
-                projects={propertyProjects}
-                onAddProject={() => setShowAddProject(true)}
-                onOpenProject={setSelectedProjectId}
-              />
-            )}
             {activeNav === 'people' && (
               <PeopleView
                 property={selectedProperty}
@@ -320,7 +512,7 @@ function App() {
                 onAddProject={() => setShowAddProject(true)}
               />
             )}
-            {!['home', 'projects', 'ideas', 'people', 'money', 'history'].includes(activeNav) && (
+            {!['home', 'projects', 'people', 'money', 'history'].includes(activeNav) && (
               <ComingSoonView label={activeNav[0].toUpperCase() + activeNav.slice(1)} />
             )}
           </>
