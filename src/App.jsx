@@ -317,6 +317,27 @@ function App() {
     }
   }, [activeNav, selectedPropertyId, selectedProjectId, allProjects])
 
+  // If another tab (same browser, same device) saves a change, pick up its
+  // project data here too — otherwise this tab's next save would overwrite
+  // that edit with its own now-stale copy. Only project data syncs this
+  // way; each tab keeps its own page/property navigation.
+  useEffect(() => {
+    function handleStorageChange(event) {
+      if (event.key !== STORAGE_KEY || !event.newValue) return
+      try {
+        const parsed = JSON.parse(event.newValue)
+        if (Array.isArray(parsed.allProjects) && parsed.allProjects.every(isValidPersistedProject)) {
+          setAllProjects(parsed.allProjects)
+        }
+      } catch {
+        // Not valid JSON / not the shape we expect — ignore and keep
+        // whatever this tab already has.
+      }
+    }
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
   const selectedProperty = properties.find((p) => p.id === selectedPropertyId)
   const propertyProjects = allProjects.filter((p) => p.property_id === selectedPropertyId)
   const selectedProject = allProjects.find((p) => p.id === selectedProjectId)
