@@ -127,6 +127,44 @@ function sanitizeProjectsForStorage(projects) {
   })
 }
 
+// When another tab's save arrives here, its snapshot was sanitized before
+// being written — any photo or file this tab uploaded locally (blob URLs
+// only ever work in the tab that created them, so they were never in that
+// snapshot to begin with) would otherwise just disappear from view the
+// moment it's adopted. Re-attach anything local-only instead of losing it.
+function mergeLocalBlobData(currentProjects, incomingProjects) {
+  return incomingProjects.map((incoming) => {
+    const current = currentProjects.find((p) => p.id === incoming.id)
+    if (!current) return incoming
+
+    const merged = { ...incoming }
+
+    for (const key of ['inspoPhotos', 'beforeAfterPhotos']) {
+      if (!current[key]) continue
+      const incomingIds = new Set((incoming[key] || []).map((p) => p.id))
+      const localOnlyBlobPhotos = current[key].filter(
+        (p) => p.url?.startsWith('blob:') && !incomingIds.has(p.id),
+      )
+      if (localOnlyBlobPhotos.length > 0) {
+        merged[key] = [...(incoming[key] || []), ...localOnlyBlobPhotos]
+      }
+    }
+
+    for (const key of ['quotes', 'documents']) {
+      if (!current[key] || !incoming[key]) continue
+      merged[key] = incoming[key].map((incomingRecord) => {
+        const currentRecord = current[key].find((r) => r.id === incomingRecord.id)
+        if (!incomingRecord.fileUrl && currentRecord?.fileUrl?.startsWith('blob:')) {
+          return { ...incomingRecord, fileUrl: currentRecord.fileUrl, fileIsImage: currentRecord.fileIsImage }
+        }
+        return incomingRecord
+      })
+    }
+
+    return merged
+  })
+}
+
 const initialPersistedState = loadPersistedState()
 
 function StatusBadge({ status }) {
@@ -326,9 +364,17 @@ function App() {
       if (event.key !== STORAGE_KEY || !event.newValue) return
       try {
         const parsed = JSON.parse(event.newValue)
-        if (Array.isArray(parsed.allProjects) && parsed.allProjects.every(isValidPersistedProject)) {
-          setAllProjects(parsed.allProjects)
+        if (!Array.isArray(parsed.allProjects) || !parsed.allProjects.every(isValidPersistedProject)) {
+          return
         }
+        setAllProjects((current) => {
+          const merged = mergeLocalBlobData(current, parsed.allProjects)
+          // Bail out when nothing actually changed — adopting a new array
+          // reference here anyway would trigger this tab's own save effect,
+          // which would re-fire the storage event this handler listens for,
+          // bouncing back and forth between tabs forever.
+          return JSON.stringify(current) === JSON.stringify(merged) ? current : merged
+        })
       } catch {
         // Not valid JSON / not the shape we expect — ignore and keep
         // whatever this tab already has.
